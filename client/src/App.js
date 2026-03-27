@@ -28,7 +28,7 @@ function App() {
   }, []);
 
   const fetchLeads = () => {
-    axios.get("http://localhost:5000/api/leads")
+   axios.get("https://mini-crm-backend-nuay.onrender.com/api/leads")
       .then(res => setLeads(res.data));
   };
 
@@ -52,7 +52,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/api/leads", form)
+    axios.post("https://mini-crm-backend-nuay.onrender.com/api/leads", form)
       .then(() => {
         fetchLeads();
         setForm({ name: "", email: "", source: "" });
@@ -60,7 +60,7 @@ function App() {
   };
 
   const updateStatus = (id, status) => {
-    axios.put(`http://localhost:5000/api/leads/${id}`, { status })
+    axios.put(`https://mini-crm-backend-nuay.onrender.com/api/leads/${id}`, { status })
       .then(fetchLeads);
   };
 

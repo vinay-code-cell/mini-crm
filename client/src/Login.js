@@ -1,29 +1,35 @@
 import { useState } from "react";
 import axios from "axios";
 
+const API_BASE_URL = "https://mini-crm-backend-nuay.onrender.com";
+
 function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    setLoading(true);
-    setError("");
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-    axios.post("http://localhost:5000/api/auth/login", {
-      email,
-      password
-    })
-    .then(res => {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+        email,
+        password
+      });
+
+      console.log("Login response:", res.data);
+
       localStorage.setItem("token", res.data.token);
       setToken(res.data.token);
-    })
-    .catch(() => {
-      setError("Invalid email or password ❌");
-    })
-    .finally(() => setLoading(false));
+    } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
+      setError(err.response?.data?.error || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +46,8 @@ function Login({ setToken }) {
           <input
             type="email"
             placeholder="Email address"
-            onChange={e => setEmail(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             style={input}
           />
         </div>
@@ -49,15 +56,16 @@ function Login({ setToken }) {
           <input
             type={show ? "text" : "password"}
             placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             style={input}
           />
           <span style={toggle} onClick={() => setShow(!show)}>
-            {show ? "🙈" : "👁️"}
+            👁️
           </span>
         </div>
 
-        <button style={button} onClick={handleLogin}>
+        <button onClick={handleLogin} style={button}>
           {loading ? "Logging in..." : "Login"}
         </button>
 
@@ -67,67 +75,75 @@ function Login({ setToken }) {
   );
 }
 
-/* 🎨 PREMIUM STYLES */
-
 const container = {
-  height: "100vh",
+  minHeight: "100vh",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  background: "linear-gradient(135deg, #0f172a, #1e293b)",
+  background: "linear-gradient(135deg, #0f172a, #1e3a8a)",
   position: "relative",
   overflow: "hidden"
 };
 
 const overlay = {
   position: "absolute",
-  width: "300%",
-  height: "300%",
-  background: "radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 60%)",
-  animation: "spin 20s linear infinite"
+  width: "100%",
+  height: "100%",
+  background: "rgba(255,255,255,0.03)",
+  backdropFilter: "blur(2px)"
 };
 
 const card = {
   position: "relative",
-  zIndex: 1,
-  width: "350px",
-  padding: "35px",
-  borderRadius: "20px",
-  background: "rgba(255,255,255,0.08)",
+  zIndex: 2,
+  width: "380px",
+  padding: "40px 30px",
+  borderRadius: "24px",
+  background: "rgba(255,255,255,0.12)",
+  boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
   backdropFilter: "blur(20px)",
-  boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
   textAlign: "center",
   color: "white"
 };
 
 const logo = {
-  marginBottom: "10px",
-  fontSize: "28px"
+  fontSize: "2rem",
+  fontWeight: "bold",
+  marginBottom: "10px"
 };
 
 const title = {
-  marginBottom: "20px",
+  fontSize: "1.6rem",
+  marginBottom: "25px",
+  fontWeight: "600"
+};
+
+const errorText = {
+  color: "#ff6b6b",
+  marginBottom: "15px",
   fontWeight: "500"
 };
 
 const inputGroup = {
   position: "relative",
-  marginBottom: "15px"
+  marginBottom: "18px"
 };
 
 const input = {
   width: "100%",
-  padding: "12px",
-  borderRadius: "10px",
+  padding: "14px 16px",
+  borderRadius: "14px",
   border: "none",
   outline: "none",
-  background: "rgba(255,255,255,0.15)",
-  color: "white"
+  fontSize: "1rem",
+  background: "rgba(255,255,255,0.85)",
+  color: "#111827",
+  boxSizing: "border-box"
 };
 
 const toggle = {
   position: "absolute",
-  right: "10px",
+  right: "15px",
   top: "50%",
   transform: "translateY(-50%)",
   cursor: "pointer"
@@ -135,27 +151,21 @@ const toggle = {
 
 const button = {
   width: "100%",
-  padding: "12px",
-  borderRadius: "10px",
-  border: "none",
-  background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+  padding: "14px",
+  borderRadius: "14px",
+  border: "2px solid rgba(255,255,255,0.5)",
+  background: "linear-gradient(90deg, #6366f1, #8b5cf6)",
   color: "white",
-  fontSize: "16px",
+  fontSize: "1.1rem",
+  fontWeight: "600",
   cursor: "pointer",
-  marginTop: "10px",
-  transition: "0.3s"
-};
-
-const errorText = {
-  color: "#f87171",
-  fontSize: "14px",
-  marginBottom: "10px"
+  marginTop: "10px"
 };
 
 const footer = {
-  marginTop: "15px",
-  fontSize: "12px",
-  opacity: 0.7
+  marginTop: "18px",
+  fontSize: "0.95rem",
+  color: "rgba(255,255,255,0.8)"
 };
 
 export default Login;

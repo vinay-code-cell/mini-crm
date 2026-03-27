@@ -7,6 +7,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const API_BASE_URL = "https://mini-crm-backend-nuay.onrender.com";
+
 function App() {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,8 +30,9 @@ function App() {
   }, []);
 
   const fetchLeads = () => {
-    axios.get("http://localhost:5000/api/leads")
-      .then(res => setLeads(res.data));
+    axios.get(`${API_BASE_URL}/api/leads`)
+      .then(res => setLeads(res.data))
+      .catch(err => console.error("Fetch leads error:", err));
   };
 
   useEffect(() => {
@@ -52,21 +55,24 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/api/leads", form)
+    axios.post(`${API_BASE_URL}/api/leads`, form)
       .then(() => {
         fetchLeads();
         setForm({ name: "", email: "", source: "" });
-      });
+      })
+      .catch(err => console.error("Add lead error:", err));
   };
 
   const updateStatus = (id, status) => {
-    axios.put(`http://localhost:5000/api/leads/${id}`, { status })
-      .then(fetchLeads);
+    axios.put(`${API_BASE_URL}/api/leads/${id}`, { status })
+      .then(fetchLeads)
+      .catch(err => console.error("Update status error:", err));
   };
 
   const deleteLead = (id) => {
-    axios.delete(`http://localhost:5000/api/leads/${id}`)
-      .then(fetchLeads);
+    axios.delete(`${API_BASE_URL}/api/leads/${id}`)
+      .then(fetchLeads)
+      .catch(err => console.error("Delete lead error:", err));
   };
 
   const logout = () => {
@@ -269,6 +275,7 @@ const contactBtn = {
   borderRadius: "5px",
   cursor: "pointer"
 };
+
 const convertBtn = { 
   margin: "5px", 
   padding: "5px 10px", 
@@ -278,6 +285,7 @@ const convertBtn = {
   borderRadius: "5px",
   cursor: "pointer"
 };
+
 const deleteBtn = { 
   margin: "5px", 
   padding: "5px 10px", 
@@ -285,6 +293,7 @@ const deleteBtn = {
   color: "white", 
   border: "none", 
   borderRadius: "5px",
+  cursor: "pointer"
 };
 
 export default App;

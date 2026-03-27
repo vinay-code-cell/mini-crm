@@ -37,6 +37,6 @@ exports.deleteLead = async (req, res) => {
     await Lead.findByIdAndDelete(req.params.id);
     res.json({ message: "Lead deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Failed to delete lead" });
   }
 };

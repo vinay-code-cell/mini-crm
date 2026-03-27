@@ -65,9 +65,16 @@ function App() {
   };
 
   const deleteLead = (id) => {
-    axios.delete(`http://localhost:5000/api/leads/${id}`)
-      .then(fetchLeads);
-  };
+  axios.delete(`https://mini-crm-backend-nuay.onrender.com/api/leads/${id}`)
+    .then(() => {
+      fetchLeads();
+      alert("Lead deleted successfully ✅");
+    })
+    .catch((err) => {
+      console.error("Delete error:", err.response?.data || err.message);
+      alert("Delete failed ❌");
+    });
+};
 
   const logout = () => {
     localStorage.removeItem("token");
